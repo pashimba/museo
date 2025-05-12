@@ -1,0 +1,20 @@
+[
+  {
+    "title": "La Noche Estrellada",
+    "img": "img/noche-estrellada.jpg",
+    "trailer": "https://es.wikipedia.org/wiki/La_noche_estrellada",
+    "gender": "Postimpresionismo"
+  },
+  {
+    "title": "La Mona Lisa",
+    "img": "img/mona-lisa.jpg",
+    "trailer": "https://es.wikipedia.org/wiki/Mona_Lisa",
+    "gender": "Renacimiento"
+  },
+  {
+    "title": "El Grito",
+    "img": "img/el-grito.jpg",
+    "trailer": "https://es.wikipedia.org/wiki/El_grito_(pintura)",
+    "gender": "Expresionismo"
+  }
+]
