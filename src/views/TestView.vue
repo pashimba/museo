@@ -1,4 +1,6 @@
+<!--  Esta pagina es usada para realizar Pruebas -->
 <template>
+  <h4>Pagina para hacer pruebas y Tests</h4>
   <div>
     <h1>Linea de tiempo</h1>
     <TimeLine :items="timelineItems" />
