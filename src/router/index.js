@@ -3,7 +3,7 @@ import HomeView from '../views/Home.vue'     // nombre del componente será Home
 import LoginView from '../views/LoginView.vue'
 import GaleriaView from '../views/GaleriaView.vue'
 import RegistroView from '../views/RegistroView.vue'
-
+import TestView from '../views/TestView.vue'
 const routes = [
   {
     path: '/',
@@ -24,7 +24,13 @@ const routes = [
     path: '/registro',
     name: 'registro',
     component: RegistroView
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: TestView
   }
+
 ]
 
 const router = createRouter({
