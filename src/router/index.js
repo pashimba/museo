@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/Home.vue'     // nombre del componente será HomeView
+import HomeView from '../views/Home.vue'
 import LoginView from '../views/LoginView.vue'
 import GaleriaView from '../views/GaleriaView.vue'
 import RegistroView from '../views/RegistroView.vue'
+import LineaDelTiempoView from '../views/LineaDelTiempoView.vue' // 👈 Importación nueva
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/registro',
     name: 'registro',
     component: RegistroView
+  },
+  {
+    path: '/linea-del-tiempo',               // 👈 Ruta nueva
+    name: 'LineaDelTiempo',
+    component: LineaDelTiempoView
   }
 ]
 

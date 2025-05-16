@@ -1,6 +1,7 @@
 <template>
   <div class="galeria-container">
-    <!-- Carrusel de obras destacadas -->
+    <FondoDinamico /> </div>
+  <div class="galeria-container">
     <div class="carousel" v-if="carouselImages.length > 0">
       <img 
         :src="carouselImages[currentIndex].imageUrl" 
@@ -72,8 +73,15 @@
 <script>
 import { db } from '@/firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import FondoDinamico from '@/components/FondoDinamico.vue';
+
+
 
 export default {
+  namen: 'GaleriaView',
+  components: {
+    FondoDinamico
+  },
   name: 'GaleriaView',
   data() {
     return {
@@ -87,6 +95,8 @@ export default {
       obras: [],
       periodosUnicos: []
     };
+   
+  
   },
   computed: {
     obrasFiltradas() {
@@ -190,12 +200,11 @@ export default {
 
 <style scoped>
 .galeria-container {
-  background-color: #f5f0e6;
-  min-height: 100vh;
-  color: #4e342e;
+  background-color: transparent;
   padding: 20px;
-  font-family: 'Georgia', serif;
+  margin: 0;
 }
+
 
 .carousel {
   position: relative;
@@ -307,54 +316,41 @@ export default {
 }
 
 .gallery-item {
-  background-color: #fffaf4;
-  border-radius: 10px;
+  background: linear-gradient(145deg, #fef9f4, #f3e7db);
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
   cursor: pointer;
 }
 
 .gallery-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transform: scale(1.03);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 
 .gallery-img {
-  width: 100%;
-  height: 200px;
+  height: 220px;
   object-fit: cover;
-  border-bottom: 1px solid #e0dcd2;
+  border-bottom: 2px solid #ddd0c4;
 }
 
 .gallery-item-info {
-  padding: 15px;
-  text-align: left;
+  padding: 16px;
+  color: #5d4037;
 }
 
 .gallery-item-info h3 {
-  color: #4e342e;
-  margin-bottom: 5px;
-  font-size: 1.2rem;
-}
-
-.gallery-item-info .artist {
-  color: #8d6e63;
-  font-weight: 500;
-  margin-bottom: 5px;
-}
-
-.gallery-item-info .year-period {
-  color: #a1887f;
-  font-size: 0.9rem;
-  margin-bottom: 10px;
+  font-size: 1.4rem;
+  font-weight: bold;
 }
 
 .gallery-item-info .description {
-  color: #5d4037;
   font-size: 0.95rem;
-  line-height: 1.4;
+  line-height: 1.5;
+  margin-top: 10px;
 }
+
 
 .loading-spinner {
   display: flex;
