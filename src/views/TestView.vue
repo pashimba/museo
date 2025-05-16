@@ -10,6 +10,7 @@
 <script>
 import TimeLine from '../components/TimeLine';
 
+
 export default {
   components: {
     TimeLine
@@ -39,6 +40,26 @@ export default {
         },
         {
           title: 'Actualidad',
+          date: '2023',
+          description: 'Continuamos innovando y creciendo con un equipo de más de 500 personas.'
+        },
+        {
+          title: 'Primer Producto',
+          date: 'Junio 2012',
+          description: 'Lanzamiento de nuestro primer producto al mercado con gran aceptación.'
+        },
+        {
+          title: 'Expansión Internacional',
+          date: 'Marzo 2015',
+          description: 'Apertura de nuestras primeras oficinas en el extranjero.'
+        },
+        {
+          title: 'Reconocimiento',
+          date: 'Noviembre 2018',
+          description: 'Premio a la innovación tecnológica en nuestra industria.'
+        },
+        {
+          title: 'Culito',
           date: '2023',
           description: 'Continuamos innovando y creciendo con un equipo de más de 500 personas.'
         }
