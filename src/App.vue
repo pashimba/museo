@@ -25,6 +25,16 @@
             <div class="u-nav-container">
               <ul class="u-nav u-unstyled u-nav-1">
                 <li class="u-nav-item">
+                  <router-link class="u-button-style u-nav-link" to="/">Homero Simpson</router-link>
+                </li>
+                
+                <li class="u-nav-item">
+                  <router-link class="u-button-style u-nav-link" to="/linea-del-tiempo">Linea Tiempo</router-link>
+                </li>
+                <li class="u-nav-item">
+                  <router-link class="u-button-style u-nav-link" to="/galeria">Galeria</router-link>
+                </li>
+                <li class="u-nav-item">
                   <router-link class="u-button-style u-nav-link" to="/login">Iniciar sesión</router-link>
                 </li>
               </ul>
@@ -67,6 +77,7 @@ export default {
 
 body {
   margin: 0;
+  background:black;
   background-color: black;  /* Fondo negro para toda la página */
   color: white;  /* Color blanco para el texto */
 }

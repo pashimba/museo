@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-      <h1 class="title">Responsive Slider Timeline</h1>
+      <h1 class="title" style="height: 35px;">  </h1>
       <div class="timeline">
         <div class="swiper-container">
           <div class="swiper-wrapper">
@@ -13,7 +13,7 @@
             >
               <div class="swiper-slide-content">
                 <span class="timeline-year">201{{ i }}</span>
-                <h4 class="timeline-title">Our nice super title</h4>
+                <h4 class="timeline-title">Titulo</h4>
                 <p class="timeline-text">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                   dolore magna aliqua.
@@ -36,6 +36,17 @@
   
   export default {
     name: 'LineaDelTiempoView',
+    data() {
+    return {
+      datos: [
+        { image: require('@/assets/images/a.jpg') },
+        { image: require('@/assets/images/a.jpg') },
+        { image: require('@/assets/images/a.jpg') },
+        { image: require('@/assets/images/a.jpg') },
+        
+      ]
+    }
+    },
     setup() {
       onMounted(() => {
         new Swiper('.swiper-container', {

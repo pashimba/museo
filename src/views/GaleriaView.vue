@@ -1,6 +1,7 @@
 <template>
   <div class="galeria-container">
-    <FondoDinamico /> </div>
+    <FondoDinamico /> 
+  </div>
   <div class="galeria-container">
     <div class="carousel" v-if="carouselImages.length > 0">
       <img 

@@ -9,28 +9,9 @@
               <h2 class="el__heading">{{ section.title }}</h2>
             </div>
             <div class="el__content">
-              <div class="el__text"><h1>titulo</h1><h6>1. Identidad <br>
-Mural "Madre Patria" – Banco Central de Bolivia
-Esta obra monumental celebra la historia, cultura y raíces pluriculturales de Bolivia, mostrando una nación diversa y orgullosa de su herencia indígena y mestiza.
-<br>
-2. Fuerza<br>
-"Las del Bicentenario" – Sofía Moreno
-Una serie fotográfica que rinde homenaje al papel vital de las mujeres bolivianas a lo largo de la historia, destacando su resiliencia y liderazgo desde cada rincón del país.
-<br>
-3. Tradición<br>
-"Alasita de Mil Colores" – Arte en miniatura
-Más de 1.000 piezas diminutas que retratan con detalle las costumbres, la fe y el ingenio popular de Bolivia, en una expresión artística única y profundamente simbólica.
-<br>
-4. Sabiduría<br>
-"El Yatiri" – Arturo Borda
-Un clásico del arte boliviano que encarna la figura ancestral del yatiri, un sabio andino que conecta lo espiritual con lo terrenal, representando el conocimiento tradicional.
-<br>
-5. Memoria<br>
-Murales de la UMSA – Arte estudiantil
-Jóvenes artistas reimaginan la historia de Bolivia a través de murales vibrantes y críticos, proyectando una visión fresca y comprometida rumbo al Bicentenario.
-<br>
-👉 ¿Quieres ver más de esta colección? Inicia sesión para explorar todas las obras completas, artistas y detalles del arte boliviano rumbo al Bicentenario.</h6>
-
+              <div class="el__text">
+                <h1>{{section.title}}</h1>
+                <p>{{section.text}}</p>
               </div>
               <div class="el__close-btn"></div>
             </div>
@@ -53,12 +34,13 @@ export default {
   data() {
     return {
       sections: [
-        { title: 'Identidad', image: require('@/assets/images/a.jpg') },
-        { title: 'Fuerza', image: require('@/assets/images/b.jpg') },
-        { title: 'Tradición', image: require('@/assets/images/c.jpg') },
-        { title: 'Sabiduría', image: require('@/assets/images/d.jpg') },
-        { title: 'Memoria', image: require('@/assets/images/e.jpg') }
-      ]
+  { title: 'Identidad', image: require('@/assets/images/a.jpg'), text: "La identidad es el alma de nuestra comunidad, reflejada en cada rostro, en cada historia y en cada símbolo que nos une." },
+  { title: 'Fuerza', image: require('@/assets/images/b.jpg'), text: "La fuerza de nuestro pueblo reside en su resiliencia, en su capacidad de resistir y avanzar con dignidad y orgullo." },
+  { title: 'Tradición', image: require('@/assets/images/c.jpg'), text: "Nuestras tradiciones son puentes que conectan generaciones, preservando el legado de quienes vinieron antes." },
+  { title: 'Sabiduría', image: require('@/assets/images/d.jpg'), text: "La sabiduría ancestral vive en nuestras palabras, en nuestras prácticas y en el respeto profundo por la tierra y la vida." },
+  { title: 'Memoria', image: require('@/assets/images/e.jpg'), text: "La memoria es la base de nuestra historia; recordar es honrar y mantener viva la llama del pasado en el presente." }
+]
+
     }
   },
   mounted() {
