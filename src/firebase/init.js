@@ -1,0 +1,23 @@
+// src/firebase/init.js
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore'; // If you plan to store user data like favorites
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+// Initialize Firebase services
+const auth = getAuth(app);
+const db = getFirestore(app); // For Firestore, if needed for user profiles/favorites
+
+export { auth, db };

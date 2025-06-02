@@ -1,14 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/Home.vue'
+import HomeView from '../views/Home.vue' // Corrected: Using Home.vue as per your original
 import LoginView from '../views/LoginView.vue'
 import GaleriaView from '../views/GaleriaView.vue'
 import RegistroView from '../views/RegistroView.vue'
-import LineaDelTiempoView from '../views/LineaDelTiempoView.vue' // 👈 Importación nueva
+import LineaDelTiempoView from '../views/LineaDelTiempoView.vue'
+import GameView from '../views/GameView.vue' // New: Import for the game page
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
+    name: 'Home', // Aligned with your original: 'Home'
     component: HomeView
   },
   {
@@ -27,14 +28,19 @@ const routes = [
     component: RegistroView
   },
   {
-    path: '/linea-del-tiempo',               // 👈 Ruta nueva
+    path: '/linea-del-tiempo',
     name: 'LineaDelTiempo',
     component: LineaDelTiempoView
+  },
+  {
+    path: '/juego', // New: Route for the game page
+    name: 'Juego', // Name for the game route
+    component: GameView
   }
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(), // Aligned with your original
   routes
 })
 

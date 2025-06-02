@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@google/model-viewer": "^4.1.0",
     "@ionic/vue": "^8.5.7",
     "@ionic/vue-router": "^8.5.7",
     "firebase": "^11.7.3",
@@ -19,6 +20,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.12.16",
+    "@babel/plugin-proposal-optional-chaining": "^7.21.0",
     "@vitejs/plugin-vue": "^5.2.4",
     "@vue/cli-plugin-babel": "^5.0.8",
     "@vue/cli-plugin-eslint": "^3.8.0",

@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
+import '@google/model-viewer'
 
 // Configuración segura para Vue 3
 const initVueApp = () => {

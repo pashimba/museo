@@ -1,0 +1,340 @@
+<template>
+    <div class="timeline-page">
+      <div class="timeline-header">
+        <h1 class="timeline-main-title">Línea de Tiempo de Bolivia</h1>
+        <p class="timeline-description">Explora los eventos clave que marcaron la historia de Bolivia, desde sus orígenes hasta la actualidad.</p>
+      </div>
+
+      <div class="timeline-container">
+        <div class="swiper-container timeline-swiper">
+          <div class="swiper-wrapper">
+            <div
+              class="swiper-slide"
+              v-for="(event, index) in timelineEvents"
+              :key="index"
+              :style="`background-image: url(${event.image})`"
+              :data-year="event.year"
+            >
+              <div class="swiper-slide-overlay"></div> <div class="swiper-slide-content">
+                <span class="timeline-year">{{ event.year }}</span>
+                <h4 class="timeline-title">{{ event.title }}</h4>
+                <p class="timeline-text">{{ event.description }}</p>
+                <div class="event-details">
+                  <p v-if="event.details">{{ event.details }}</p>
+                  <a :href="event.link" target="_blank" v-if="event.link" class="event-link">Más información</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-pagination"></div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+        </div>
+      </div>
+    </div>
+  </template>
+  
+  <script>
+  import { onMounted, ref } from 'vue'
+  import Swiper from 'swiper'
+  import 'swiper/swiper-bundle.css'
+  
+  export default {
+    name: 'LineaDelTiempoView',
+    setup() {
+      const timelineEvents = ref([
+        {
+          year: "800 a.C.",
+          title: "Cultura Tiwanaku",
+          description: "Surgimiento de la civilización Tiwanaku, una de las más importantes de los Andes precolombinos, conocida por su avanzada arquitectura y agricultura.",
+          image: require('@/assets/timeline/tiwanaku.jpg'),
+          details: "Su capital, Tiwanaku, fue un centro ceremonial y político de gran influencia."
+        },
+        {
+          year: "1400 d.C.",
+          title: "Expansión Inca",
+          description: "El Imperio Incaico extiende su dominio sobre gran parte del actual territorio boliviano, integrando a diversas culturas andinas.",
+          image: require('@/assets/timeline/inca.jpg'),
+          details: "Se construyen caminos, fortalezas y se introduce el sistema de los quipus."
+        },
+        {
+          year: "1532",
+          title: "Llegada de los Conquistadores",
+          description: "La llegada de los españoles marca el inicio de la colonización y el fin del Imperio Incaico. Potosí se convierte en un centro minero crucial.",
+          image: require('@/assets/timeline/conquista.jpg'),
+          details: "La riqueza de la plata de Potosí impulsa la economía del Virreinato del Perú."
+        },
+        {
+          year: "1809",
+          title: "Primer Grito Libertario",
+          description: "El 25 de mayo de 1809, Chuquisaca (Sucre) protagoniza el primer levantamiento independentista en Hispanoamérica.",
+          image: require('@/assets/timeline/chuquisaca.jpg'),
+          details: "Este evento es considerado el punto de partida de la lucha por la independencia en la región."
+        },
+        {
+          year: "1825",
+          title: "Declaración de Independencia",
+          description: "Bolivia declara su independencia el 6 de agosto de 1825 en Sucre, tras años de intensas batallas y el liderazgo de Simón Bolívar y Antonio José de Sucre.",
+          image: require('@/assets/timeline/independencia.jpg'),
+          details: "Nacimiento de la República de Bolívar, que más tarde sería Bolivia."
+        },
+        {
+          year: "1879-1884",
+          title: "Guerra del Pacífico",
+          description: "Conflicto bélico entre Bolivia y Perú contra Chile, que resultó en la pérdida del acceso soberano de Bolivia al Océano Pacífico.",
+          image: require('@/assets/timeline/guerra_pacifico.jpg'),
+          details: "Un evento que tuvo profundas repercusiones en la geografía y la economía boliviana."
+        },
+        {
+          year: "1952",
+          title: "Revolución Nacional",
+          description: "Un hito transformador que incluyó la nacionalización de las minas, la reforma agraria y el voto universal, cambiando la estructura social y política del país.",
+          image: require('@/assets/timeline/revolucion.jpg'),
+          details: "El Movimiento Nacionalista Revolucionario (MNR) lideró este proceso."
+        },
+        {
+          year: "2009",
+          title: "Nueva Constitución Política del Estado",
+          description: "Promulgación de una nueva Constitución que refunda Bolivia como un Estado Plurinacional, reconociendo la diversidad cultural y los derechos indígenas.",
+          image: require('@/assets/timeline/constitucion.jpg'),
+          details: "Un paso fundamental hacia la construcción de una Bolivia inclusiva y participativa."
+        }
+      ]);
+
+      onMounted(() => {
+        new Swiper('.timeline-swiper', {
+          direction: 'vertical',
+          loop: false, // Changed to false for a linear timeline
+          speed: 1000,
+          pagination: {
+            el: '.swiper-pagination',
+            type: 'bullets',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+          mousewheel: true, // Enable mousewheel navigation
+          keyboard: {
+            enabled: true,
+            onlyInViewport: true,
+          },
+          slidesPerView: 1, // Show one slide at a time
+          spaceBetween: 0, // No space between slides
+          effect: 'fade', // Use fade effect for smoother transitions
+          fadeEffect: {
+            crossFade: true,
+          },
+        });
+      })
+  
+      return {
+        timelineEvents
+      }
+    }
+  }
+  </script>
+  
+  <style lang="scss">
+  /* Base styles for the timeline */
+  .timeline-page {
+    background-color: #f5f5f5; /* Light background */
+    min-height: calc(100vh - 80px); /* Adjust for header height */
+    padding: 50px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .timeline-header {
+    text-align: center;
+    margin-bottom: 50px;
+    color: #4E342E;
+  }
+
+  .timeline-main-title {
+    font-family: 'Georgia', serif;
+    font-size: 3.5rem;
+    margin-bottom: 10px;
+  }
+
+  .timeline-description {
+    font-size: 1.2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    color: #555;
+  }
+  
+  .timeline-container {
+    width: 90%;
+    max-width: 900px; /* Adjust max width for better appearance */
+    height: 600px; /* Fixed height for the swiper container */
+    margin: 0 auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .timeline-swiper {
+    width: 100%;
+    height: 100%;
+    
+    .swiper-slide {
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      color: white;
+      text-align: center;
+    }
+
+    .swiper-slide-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%);
+      z-index: 1;
+    }
+  
+    .swiper-slide-content {
+      position: relative;
+      z-index: 2;
+      padding: 30px;
+      max-width: 700px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+    }
+  
+    .timeline-year {
+      font-size: 4rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #FFECB3; /* Light yellow for year */
+    }
+  
+    .timeline-title {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      font-family: 'Georgia', serif;
+    }
+  
+    .timeline-text {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .event-details {
+      margin-top: 20px;
+      font-size: 1rem;
+      color: #ccc;
+    }
+
+    .event-link {
+      color: #FFECB3;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    .event-link:hover {
+      color: #FFF;
+      text-decoration: underline;
+    }
+  
+    /* Swiper Navigation (arrows) */
+    .swiper-button-prev,
+    .swiper-button-next {
+      color: #FFECB3; /* Light yellow arrows */
+      width: 50px;
+      height: 50px;
+      background-color: rgba(78, 52, 46, 0.7); /* Dark brown with transparency */
+      border-radius: 50%;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      top: 50%; /* Center vertically */
+      transform: translateY(-50%);
+    }
+
+    .swiper-button-prev:hover,
+    .swiper-button-next:hover {
+        background-color: rgba(109, 76, 65, 0.9);
+        color: #FFF;
+    }
+
+    .swiper-button-prev {
+        left: 20px;
+    }
+
+    .swiper-button-next {
+        right: 20px;
+    }
+
+    .swiper-button-prev:after,
+    .swiper-button-next:after {
+      font-size: 1.5rem; /* Adjust icon size */
+    }
+  
+    /* Swiper Pagination (bullets) */
+    .swiper-pagination-bullets.swiper-pagination-vertical {
+      right: 20px;
+      left: auto;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .swiper-pagination-bullet {
+      background: #8D6E63; /* Medium brown for inactive bullets */
+      opacity: 0.7;
+      margin: 8px 0 !important; /* Spacing between bullets */
+      width: 12px;
+      height: 12px;
+      transition: background-color 0.3s ease, opacity 0.3s ease;
+    }
+  
+    .swiper-pagination-bullet-active {
+      background: #FFECB3; /* Light yellow for active bullet */
+      opacity: 1;
+      transform: scale(1.2); /* Slightly larger active bullet */
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .timeline-main-title {
+        font-size: 2.5rem;
+      }
+      .timeline-description {
+        font-size: 1rem;
+      }
+      .timeline-container {
+        height: 500px;
+      }
+      .timeline-year {
+        font-size: 3rem;
+      }
+      .timeline-title {
+        font-size: 2rem;
+      }
+      .timeline-text {
+        font-size: 0.9rem;
+      }
+      .swiper-button-prev,
+      .swiper-button-next {
+        width: 40px;
+        height: 40px;
+        left: 10px;
+        right: 10px;
+      }
+      .swiper-button-prev:after,
+      .swiper-button-next:after {
+        font-size: 1.2rem;
+      }
+      .swiper-pagination-bullets.swiper-pagination-vertical {
+        right: 10px;
+      }
+    }
+  }
+  </style>

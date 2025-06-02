@@ -1,54 +1,51 @@
 <template>
-  <div class="login-container">
-    <div class="logo-museo"></div>
-    <h1>MUSEO VIRTUAL</h1>
+  <div class="auth-page">
+    <div class="auth-container">
+      <div class="logo-museo"></div>
+      <h1>MUSEO VIRTUAL</h1>
 
-    <div class="login-box">
-      <div class="login-form">
-        <h2 class="form-title">Iniciar sesión</h2>
-        
-        <div class="group">
-          <label for="email">Correo electrónico</label>
-          <input 
-            v-model="email" 
-            type="email" 
-            id="email"
-            placeholder="tu@email.com"
-            @keyup.enter="handleLogin"
-          />
-        </div>
-        
-        <div class="group">
-          <label for="password">Contraseña</label>
-          <input 
-            v-model="password" 
-            type="password" 
-            id="password"
-            placeholder="••••••"
-            @keyup.enter="handleLogin"
-          />
-        </div>
-        
-        <div class="error-message" v-if="errorMessage">{{ errorMessage }}</div>
-        
-        <button 
-          @click="handleLogin"
-          :disabled="isLoading"
-          class="login-button"
-        >
-          <span v-if="!isLoading">Ingresar</span>
-          <span v-else>
-            <i class="spinner"></i> Cargando...
-          </span>
-        </button>
-        
-        <div class="additional-options">
-          <router-link to="/registro" class="register-link">
-            ¿No tienes cuenta? Regístrate
-          </router-link>
-          <router-link to="/recuperar-contrasena" class="forgot-password">
-            ¿Olvidaste tu contraseña?
-          </router-link>
+      <div class="auth-box">
+        <div class="auth-form">
+          <h2 class="form-title">Iniciar Sesión</h2>
+          
+          <div class="group">
+            <label for="email">Correo electrónico</label>
+            <input 
+              v-model="email" 
+              type="email" 
+              id="email"
+              placeholder="tu@email.com"
+              @keyup.enter="handleLogin"
+            />
+          </div>
+          
+          <div class="group">
+            <label for="password">Contraseña</label>
+            <input 
+              v-model="password" 
+              type="password" 
+              id="password"
+              placeholder="••••••"
+              @keyup.enter="handleLogin"
+            />
+          </div>
+          
+          <div class="error-message" v-if="errorMessage">{{ errorMessage }}</div>
+          
+          <button 
+            @click="handleLogin"
+            :disabled="isLoading"
+            class="auth-button"
+          >
+            <span v-if="!isLoading">Ingresar</span>
+            <span v-else>
+              <i class="spinner"></i> Cargando...
+            </span>
+          </button>
+          
+          <div class="additional-options">
+            <router-link to="/registro" class="auth-link">¿No tienes cuenta? Regístrate aquí</router-link>
+            </div>
         </div>
       </div>
     </div>
@@ -56,205 +53,211 @@
 </template>
 
 <script>
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/firebase";
+import { ref } from 'vue';
+import { auth } from '@/firebase/init'; // Import Firebase auth
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'LoginView',
-  data() {
-    return {
-      email: "",
-      password: "",
-      errorMessage: "",
-      isLoading: false
-    };
-  },
-  methods: {
-    async handleLogin() {
-      // Validaciones básicas
-      if (!this.email || !this.password) {
-        this.errorMessage = "Por favor completa todos los campos";
-        return;
-      }
-      
-      if (!this.email.includes("@")) {
-        this.errorMessage = "Por favor ingresa un correo válido";
-        return;
-      }
-      
-      this.isLoading = true;
-      this.errorMessage = "";
-      
+  setup() {
+    const email = ref('');
+    const password = ref('');
+    const errorMessage = ref('');
+    const isLoading = ref(false);
+    const router = useRouter();
+
+    const handleLogin = async () => {
+      errorMessage.value = '';
+      isLoading.value = true;
+
       try {
-        // Iniciar sesión con Firebase Auth
-        await signInWithEmailAndPassword(auth, this.email, this.password);
-        
-        // Redirigir al dashboard/galería
-        this.$router.push("/galeria");
-        
+        await signInWithEmailAndPassword(auth, email.value, password.value);
+        router.push('/'); // Redirect to home on successful login
       } catch (error) {
-        console.error("Error de autenticación:", error);
-        
-        // Manejo de errores específicos
+        console.error("Login error:", error.code, error.message);
         switch (error.code) {
           case 'auth/user-not-found':
-            this.errorMessage = "Usuario no encontrado";
-            break;
           case 'auth/wrong-password':
-            this.errorMessage = "Contraseña incorrecta";
+            errorMessage.value = 'Correo electrónico o contraseña incorrectos.';
             break;
           case 'auth/invalid-email':
-            this.errorMessage = "Correo electrónico inválido";
+            errorMessage.value = 'Formato de correo electrónico inválido.';
             break;
           case 'auth/too-many-requests':
-            this.errorMessage = "Demasiados intentos. Intenta más tarde o restablece tu contraseña";
+            errorMessage.value = 'Demasiados intentos fallidos. Intenta de nuevo más tarde.';
             break;
           default:
-            this.errorMessage = "Error al iniciar sesión. Intenta nuevamente.";
+            errorMessage.value = 'Ocurrió un error al iniciar sesión. Inténtalo de nuevo.';
         }
       } finally {
-        this.isLoading = false;
+        isLoading.value = false;
       }
-    }
-  }
+    };
+
+    return {
+      email,
+      password,
+      errorMessage,
+      isLoading,
+      handleLogin,
+    };
+  },
 };
 </script>
 
 <style scoped>
-.login-container {
-  text-align: center;
-  font-family: 'Georgia', serif;
-  background: #f3f0e8;
-  color: #3e3e3e;
-  padding: 2rem;
-  min-height: 100vh;
+.auth-page {
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('@/assets/auth_bg.jfif') no-repeat center center/cover; /* Themed background */
+  min-height: calc(100vh - 80px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+.auth-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 450px;
+  background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white box */
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  padding: 40px;
+  color: #4E342E; /* Dark brown text */
 }
 
 .logo-museo {
-  background-image: url('@/assets/museo-logo.png');
+  width: 100px;
+  height: 100px;
+  background-image: url('@/assets/logo.png'); /* Use your museum logo */
   background-size: contain;
   background-repeat: no-repeat;
-  width: 120px;
-  height: 100px;
-  margin: 0 auto 20px;
+  background-position: center;
+  margin-bottom: 20px;
 }
 
-.login-box {
-  max-width: 400px;
-  background: #fff;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  margin: 0 auto;
+.auth-container h1 {
+  font-family: 'Georgia', serif;
+  font-size: 2.2rem;
+  margin-bottom: 30px;
+  color: #4E342E;
+}
+
+.auth-box {
+  width: 100%;
 }
 
 .form-title {
-  color: #4e342e;
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
+  text-align: center;
+  color: #4E342E;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+  font-weight: bold;
 }
 
 .group {
-  margin-bottom: 1.5rem;
-  text-align: left;
+  margin-bottom: 20px;
 }
 
 .group label {
   display: block;
-  margin-bottom: 0.5rem;
-  color: #5d4037;
-  font-weight: 500;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #6D4C41; /* Slightly lighter brown for labels */
 }
 
 .group input {
   width: 100%;
-  padding: 0.8rem;
-  border-radius: 5px;
-  border: 1px solid #bfae9e;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid #BFAe9E; /* Light brown border */
   font-size: 1rem;
-  transition: border 0.3s;
+  background-color: #F8F8F8;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box; /* Include padding in width */
 }
 
 .group input:focus {
-  border-color: #8c5e3c;
+  border-color: #8C5E3C; /* Darker brown on focus */
   outline: none;
+  box-shadow: 0 0 0 3px rgba(141, 110, 99, 0.3); /* Subtle focus ring */
 }
 
-.login-button {
+.auth-button {
   width: 100%;
-  padding: 0.8rem;
+  padding: 12px;
   border: none;
-  background: #4e342e;
+  background: #4E342E; /* Dark brown button */
   color: white;
   font-weight: bold;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 1rem;
-  transition: background 0.3s;
-  margin-top: 0.5rem;
+  font-size: 1.1rem;
+  transition: background 0.3s ease, transform 0.2s ease;
+  margin-top: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
-.login-button:hover {
-  background: #6d4c41;
+.auth-button:hover {
+  background: #6D4C41; /* Lighter brown on hover */
+  transform: translateY(-2px);
 }
 
-.login-button:disabled {
-  background: #a1887f;
+.auth-button:disabled {
+  background: #A1887F; /* Grayed out when disabled */
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-.error-message {
-  color: #d32f2f;
-  background-color: #ffebee;
-  padding: 0.8rem;
-  border-radius: 5px;
-  margin: 1rem 0;
-  text-align: center;
-  font-size: 0.9rem;
-}
-
-.additional-options {
-  margin-top: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.register-link {
-  color: #1e88e5;
-  text-decoration: none;
-  font-size: 0.9rem;
-}
-
-.register-link:hover {
-  text-decoration: underline;
-}
-
-.forgot-password {
-  color: #757575;
-  text-decoration: none;
-  font-size: 0.85rem;
-}
-
-.forgot-password:hover {
-  text-decoration: underline;
-}
-
-/* Spinner para estado de carga */
 .spinner {
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 3px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
-  border-top-color: #fff;
-  animation: spin 1s ease-in-out infinite;
+  border-top: 3px solid #fff;
+  width: 18px;
+  height: 18px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-message {
+  color: #D32F2F; /* Red error message */
+  background-color: #FFEBEE; /* Light red background */
+  padding: 10px;
+  border-radius: 5px;
+  margin: 15px 0;
+  text-align: center;
+  font-size: 0.95rem;
+  border: 1px solid #EF9A9A;
+}
+
+.additional-options {
+  text-align: center;
+  margin-top: 25px;
+  font-size: 0.95rem;
+}
+
+.auth-link {
+  color: #6D4C41; /* Medium brown link */
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.auth-link:hover {
+  color: #8C5E3C;
+  text-decoration: underline;
 }
 </style>

@@ -1,30 +1,46 @@
 <template>
-  <div class="cont s--inactive">
-    <div class="cont__inner">
-      <div class="el" v-for="(section, index) in sections" :key="index">
-        <div class="el__overflow">
-          <div class="el__inner">
-            <div class="el__bg" :style="{ backgroundImage: `url(${section.image})` }"></div>
-            <div class="el__preview-cont">
-              <h2 class="el__heading">{{ section.title }}</h2>
-            </div>
-            <div class="el__content">
-              <div class="el__text">
-                <h1>{{section.title}}</h1>
-                <p>{{section.text}}</p>
+  <div class="home-wrapper">
+    <div class="hero-section">
+      <h1 class="hero-title">Descubre la Fascinante Historia de Bolivia</h1>
+      <p class="hero-subtitle">Un viaje interactivo a través del tiempo y la cultura</p>
+      <router-link to="/linea-del-tiempo" class="u-button-style hero-button">Explora la Línea de Tiempo</router-link>
+    </div>
+
+    <div class="cont s--inactive">
+      <div class="cont__inner">
+        <div class="el" v-for="(section, index) in sections" :key="index" @click="toggleActive(index)" :class="{'s--active': activeIndex === index}">
+          <div class="el__overflow">
+            <div class="el__inner">
+              <div class="el__bg" :style="{ backgroundImage: `url(${section.image})` }"></div>
+              <div class="el__preview-cont">
+                <h2 class="el__heading">{{ section.title }}</h2>
               </div>
-              <div class="el__close-btn"></div>
+              <div class="el__content">
+                <div class="el__text">
+                  <h1>{{section.title}}</h1>
+                  <p>{{section.text}}</p>
+                  <router-link :to="section.link" class="content-button" v-if="section.link">Ver más</router-link>
+                </div>
+                <div class="el__close-btn" @click.stop="deactivate"></div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="el__index">
-          <div class="el__index-back">{{ index + 1 }}</div>
-          <div class="el__index-front">
-            <div class="el__index-overlay" :data-index="index + 1">{{ index + 1 }}</div>
+          <div class="el__index">
+            <div class="el__index-back">{{ index + 1 }}</div>
+            <div class="el__index-front">
+              <div class="el__index-overlay" :data-index="index + 1">{{ index + 1 }}</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <section class="about-museum-section">
+      <h2>Acerca del Museo Virtual</h2>
+      <p>Nuestro Museo Virtual de la Historia de Bolivia es una iniciativa para preservar y difundir el rico patrimonio cultural y los momentos clave que forjaron nuestra nación. A través de exhibiciones interactivas, líneas de tiempo detalladas, galerías inmersivas y juegos educativos, buscamos hacer la historia accesible y emocionante para todos.</p>
+      <p>¡Sumérgete y descubre los secretos y héroes de Bolivia!</p>
+    </section>
+
   </div>
 </template>
 
@@ -33,532 +49,317 @@ export default {
   name: 'HomeView',
   data() {
     return {
+      activeIndex: null, // To manage active state for sections
       sections: [
-  { title: 'Identidad', image: require('@/assets/images/a.jpg'), text: "La identidad es el alma de nuestra comunidad, reflejada en cada rostro, en cada historia y en cada símbolo que nos une." },
-  { title: 'Fuerza', image: require('@/assets/images/b.jpg'), text: "La fuerza de nuestro pueblo reside en su resiliencia, en su capacidad de resistir y avanzar con dignidad y orgullo." },
-  { title: 'Tradición', image: require('@/assets/images/c.jpg'), text: "Nuestras tradiciones son puentes que conectan generaciones, preservando el legado de quienes vinieron antes." },
-  { title: 'Sabiduría', image: require('@/assets/images/d.jpg'), text: "La sabiduría ancestral vive en nuestras palabras, en nuestras prácticas y en el respeto profundo por la tierra y la vida." },
-  { title: 'Memoria', image: require('@/assets/images/e.jpg'), text: "La memoria es la base de nuestra historia; recordar es honrar y mantener viva la llama del pasado en el presente." }
-]
-
-    }
+        { title: 'Identidad', image: require('@/assets/images/a.jpg'), text: "La identidad es el alma de nuestra comunidad, reflejada en nuestra rica diversidad cultural y el legado de nuestros ancestros.", link: "/galeria" },
+        { title: 'Raíces Precolombinas', image: require('@/assets/images/b.jpg'), text: "Explora las civilizaciones antiguas que florecieron en nuestro territorio, desde Tiwanaku hasta los imperios incaicos, dejando un legado arquitectónico y cultural invaluable.", link: "/linea-del-tiempo" },
+        { title: 'Conquista y Colonia', image: require('@/assets/images/c.jpg'), text: "El impacto de la llegada europea y la formación de la sociedad colonial, la explotación minera y las primeras rebeliones indígenas.", link: "/linea-del-tiempo" },
+        { title: 'Independencia', image: require('@/assets/images/d.jpg'), text: "La lucha heroica por la emancipación, las batallas decisivas y los líderes que forjaron la República de Bolivia.", link: "/linea-del-tiempo" },
+        { title: 'Bolivia Contemporánea', image: require('@/assets/images/e.jpg'), text: "Desde el nacimiento de la República hasta los desafíos y transformaciones del siglo XXI, un recorrido por la Bolivia moderna.", link: "/linea-del-tiempo" }
+      ]
+    };
   },
   mounted() {
-    const cont = this.$el;
-    setTimeout(() => cont.classList.remove('s--inactive'), 200);
+    const cont = document.querySelector('.cont');
+    const els = document.querySelectorAll('.el');
 
-    const elsArr = Array.from(cont.querySelectorAll('.el'));
-    const closeBtnsArr = Array.from(cont.querySelectorAll('.el__close-btn'));
-
-    elsArr.forEach(($el) => {
-      $el.addEventListener('click', function () {
-        if (this.classList.contains('s--active')) return;
-        cont.classList.add('s--el-active');
-        this.classList.add('s--active');
+    els.forEach(el => {
+      el.addEventListener('click', () => {
+        if (el.classList.contains('s--active')) return;
+        cont.classList.add('s--active');
+        el.classList.add('s--active');
+        this.activeIndex = Array.from(els).indexOf(el); // Set active index
       });
     });
 
-    closeBtnsArr.forEach(($btn) => {
-      $btn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        cont.classList.remove('s--el-active');
-        const activeEl = cont.querySelector('.el.s--active');
-        if (activeEl) activeEl.classList.remove('s--active');
-      });
+    document.querySelector('.cont').addEventListener('click', (e) => {
+      if (!e.target.closest('.el') || e.target.closest('.el__close-btn')) {
+        this.deactivate();
+      }
     });
+  },
+  methods: {
+    toggleActive(index) {
+      if (this.activeIndex === index) {
+        this.deactivate(); // If clicking active, deactivate
+      } else {
+        const cont = document.querySelector('.cont');
+        const els = document.querySelectorAll('.el');
+        cont.classList.add('s--active');
+        els[index].classList.add('s--active');
+        this.activeIndex = index;
+      }
+    },
+    deactivate() {
+      const cont = document.querySelector('.cont');
+      const activeEl = document.querySelector('.el.s--active');
+      if (activeEl) {
+        activeEl.classList.remove('s--active');
+      }
+      cont.classList.remove('s--active');
+      this.activeIndex = null;
+    }
   }
-};
+}
 </script>
 
-<style scoped>
-*, *:before, *:after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+<style>
+/* General body styling - moved to app.vue global styles for consistency */
+
+.home-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 80px); /* Adjust based on header height */
+  /* Remove fixed height for main content */
 }
 
-body {
-  background: #1f1f1f;
-  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+.hero-section {
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('@/assets/hero_bg.jpg') no-repeat center center/cover; /* Example hero image */
+  color: white;
+  text-align: center;
+  padding: 100px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px; /* Minimum height for hero */
 }
 
+.hero-title {
+  font-family: 'Georgia', serif;
+  font-size: 3.5rem;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 30px;
+  max-width: 700px;
+  line-height: 1.6;
+}
+
+.hero-button {
+  display: inline-block;
+  padding: 15px 30px;
+  background-color: #A1887F; /* Soft brown */
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.hero-button:hover {
+  background-color: #8D6E63;
+  transform: translateY(-3px);
+}
+
+
+/* Existing .cont and .el styles - ensure they work well with the new hero section */
+/* You might want to adjust their margins/positioning */
 .cont {
-  position: relative;
+  position: relative; /* Changed to relative for flow */
+  /* height: 100vh; Removed fixed height */
+  width: 100%;
   overflow: hidden;
-  height: 100vh;
-  padding: 80px 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 0; /* Add some padding */
+  background-color: #f8f8f8; /* Light background for sections */
 }
+
 .cont__inner {
   position: relative;
-  height: 100%;
-}
-.cont__inner:hover .el__bg:after {
-  opacity: 1;
+  width: 90%; /* Make it responsive */
+  max-width: 1200px; /* Max width for larger screens */
+  height: 500px; /* Adjust height for the carousel */
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 2000px; /* For 3D effect */
 }
 
 .el {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 19.2%;
+  width: 20%; /* Adjust width for more cards */
   height: 100%;
-  background: #252525;
-  -webkit-transition: width 0.7s, opacity 0.6s 0.7s, z-index 0s 1.3s, -webkit-transform 0.6s 0.7s;
-  transition: width 0.7s, opacity 0.6s 0.7s, z-index 0s 1.3s, -webkit-transform 0.6s 0.7s;
-  transition: transform 0.6s 0.7s, width 0.7s, opacity 0.6s 0.7s, z-index 0s 1.3s;
-  transition: transform 0.6s 0.7s, width 0.7s, opacity 0.6s 0.7s, z-index 0s 1.3s, -webkit-transform 0.6s 0.7s;
-  will-change: transform, width, opacity;
-}
-.el:not(.s--active) {
+  left: 0;
+  right: 0;
+  margin: auto;
   cursor: pointer;
-}
-.el__overflow {
+  -webkit-transition: -webkit-transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: -webkit-transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1), -webkit-transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  border-radius: 10px;
   overflow: hidden;
-  position: relative;
-  height: 100%;
 }
-.el__inner {
-  overflow: hidden;
-  position: relative;
-  height: 100%;
-  -webkit-transition: -webkit-transform 1s;
-  transition: -webkit-transform 1s;
-  transition: transform 1s;
-  transition: transform 1s, -webkit-transform 1s;
+
+.el:nth-child(1) { transform: translate3d(-180%, 0, -200px); }
+.el:nth-child(2) { transform: translate3d(-90%, 0, -100px); }
+.el:nth-child(3) { transform: translate3d(0, 0, 0); } /* Center */
+.el:nth-child(4) { transform: translate3d(90%, 0, -100px); }
+.el:nth-child(5) { transform: translate3d(180%, 0, -200px); }
+/* Add more if you have more sections */
+
+.cont.s--active .el {
+  cursor: default;
 }
-.cont.s--inactive .el__inner {
-  -webkit-transform: translate3d(0, 100%, 0);
-          transform: translate3d(0, 100%, 0);
+
+.cont.s--active .el:nth-child(1) { transform: translate3d(-60%, 0, -200px); }
+.cont.s--active .el:nth-child(2) { transform: translate3d(-30%, 0, -100px); }
+.cont.s--active .el:nth-child(3) { transform: translate3d(0, 0, 0); }
+.cont.s--active .el:nth-child(4) { transform: translate3d(30%, 0, -100px); }
+.cont.s--active .el:nth-child(5) { transform: translate3d(60%, 0, -200px); }
+
+/* When an element is active, others shift */
+.cont.s--active .el.s--active ~ .el {
+    -webkit-transform: translate3d(100%, 0, -200px);
+            transform: translate3d(100%, 0, -200px);
 }
-.el__bg {
-  position: relative;
-  width: calc(100vw - 140px);
-  height: 100%;
-  -webkit-transition: -webkit-transform 0.6s 0.7s;
-  transition: -webkit-transform 0.6s 0.7s;
-  transition: transform 0.6s 0.7s;
-  transition: transform 0.6s 0.7s, -webkit-transform 0.6s 0.7s;
-  will-change: transform;
+.cont.s--active .el.s--active ~ .el:nth-child(2) { /* Adjust for previous elements */
+    -webkit-transform: translate3d(-100%, 0, -200px);
+            transform: translate3d(-100%, 0, -200px);
 }
-.el__bg:before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: -5%;
-  width: 100%;
-  height: 110%;
-  background-size: cover;
-  background-position: center center;
-  -webkit-transition: -webkit-transform 1s;
-  transition: -webkit-transform 1s;
-  transition: transform 1s;
-  transition: transform 1s, -webkit-transform 1s;
-  -webkit-transform: translate3d(0, 0, 0) scale(1);
-          transform: translate3d(0, 0, 0) scale(1);
-}
-.cont.s--inactive .el__bg:before {
-  -webkit-transform: translate3d(0, -100%, 0) scale(1.2);
-          transform: translate3d(0, -100%, 0) scale(1.2);
-}
-.el.s--active .el__bg:before {
-  -webkit-transition: -webkit-transform 0.8s;
-  transition: -webkit-transform 0.8s;
-  transition: transform 0.8s;
-  transition: transform 0.8s, -webkit-transform 0.8s;
-}
-.el__bg:after {
-  content: "";
-  z-index: 1;
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  opacity: 0;
-  -webkit-transition: opacity 0.5s;
-  transition: opacity 0.5s;
-}
-.cont.s--el-active .el__bg:after {
-  -webkit-transition: opacity 0.5s 1.4s;
-  transition: opacity 0.5s 1.4s;
-  opacity: 1 !important;
-}
-.el__preview-cont {
-  z-index: 2;
-  display: -webkit-box;
-  display: flex;
-  -webkit-box-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-          align-items: center;
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  -webkit-transition: all 0.3s 1.2s;
-  transition: all 0.3s 1.2s;
-}
-.cont.s--inactive .el__preview-cont {
-  opacity: 0;
-  -webkit-transform: translateY(10px);
-          transform: translateY(10px);
-}
-.cont.s--el-active .el__preview-cont {
-  opacity: 0;
-  -webkit-transform: translateY(30px);
-          transform: translateY(30px);
-  -webkit-transition: all 0.5s;
-  transition: all 0.5s;
-}
-.el__heading {
-  color: #fff;
-  text-transform: uppercase;
-  font-size: 18px;
-}
-.el__content {
-  z-index: -1;
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  padding: 30px;
-  opacity: 0;
-  pointer-events: none;
-  -webkit-transition: all 0.1s;
-  transition: all 0.1s;
-}
-.el.s--active .el__content {
-  z-index: 2;
-  opacity: 1;
-  pointer-events: auto;
-  -webkit-transition: all 0.5s 1.4s;
-  transition: all 0.5s 1.4s;
-}
-.el__text {
-  text-transform: uppercase;
-  font-size: 40px;
-  color: #fff;
-}
-.el__close-btn {
-  z-index: -1;
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  width: 60px;
-  height: 60px;
-  opacity: 0;
-  pointer-events: none;
-  -webkit-transition: all 0s 0.45s;
-  transition: all 0s 0.45s;
-  cursor: pointer;
-}
-.el.s--active .el__close-btn {
-  z-index: 5;
-  opacity: 1;
-  pointer-events: auto;
-  -webkit-transition: all 0s 1.4s;
-  transition: all 0s 1.4s;
-}
-.el__close-btn:before, .el__close-btn:after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  width: 100%;
-  height: 8px;
-  margin-top: -4px;
-  background: #fff;
-  opacity: 0;
-  -webkit-transition: opacity 0s;
-  transition: opacity 0s;
-}
-.el.s--active .el__close-btn:before, .el.s--active .el__close-btn:after {
-  opacity: 1;
-}
-.el__close-btn:before {
-  -webkit-transform: rotate(45deg) translateX(100%);
-          transform: rotate(45deg) translateX(100%);
-}
-.el.s--active .el__close-btn:before {
-  -webkit-transition: all 0.3s 1.4s cubic-bezier(0.72, 0.09, 0.32, 1.57);
-  transition: all 0.3s 1.4s cubic-bezier(0.72, 0.09, 0.32, 1.57);
-  -webkit-transform: rotate(45deg) translateX(0);
-          transform: rotate(45deg) translateX(0);
-}
-.el__close-btn:after {
-  -webkit-transform: rotate(-45deg) translateX(100%);
-          transform: rotate(-45deg) translateX(100%);
-}
-.el.s--active .el__close-btn:after {
-  -webkit-transition: all 0.3s 1.55s cubic-bezier(0.72, 0.09, 0.32, 1.57);
-  transition: all 0.3s 1.55s cubic-bezier(0.72, 0.09, 0.32, 1.57);
-  -webkit-transform: rotate(-45deg) translateX(0);
-          transform: rotate(-45deg) translateX(0);
-}
-.el__index {
-  overflow: hidden;
-  position: absolute;
-  left: 0;
-  bottom: -80px;
-  width: 100%;
-  height: 100%;
-  min-height: 250px;
-  text-align: center;
-  font-size: 20vw;
-  line-height: 0.85;
-  font-weight: bold;
-  -webkit-transition: opacity 0.3s 1.4s, -webkit-transform 0.5s;
-  transition: opacity 0.3s 1.4s, -webkit-transform 0.5s;
-  transition: transform 0.5s, opacity 0.3s 1.4s;
-  transition: transform 0.5s, opacity 0.3s 1.4s, -webkit-transform 0.5s;
-  -webkit-transform: translate3d(0, 1vw, 0);
-          transform: translate3d(0, 1vw, 0);
-}
-.el:hover .el__index {
-  -webkit-transform: translate3d(0, 0, 0);
-          transform: translate3d(0, 0, 0);
-}
-.cont.s--el-active .el__index {
-  -webkit-transition: opacity 0.3s, -webkit-transform 0.5s;
-  transition: opacity 0.3s, -webkit-transform 0.5s;
-  transition: transform 0.5s, opacity 0.3s;
-  transition: transform 0.5s, opacity 0.3s, -webkit-transform 0.5s;
-  opacity: 0;
-}
-.el__index-back, .el__index-front {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-}
-.el__index-back {
-  color: #2f3840;
-  opacity: 0;
-  -webkit-transition: opacity 0.25s 0.25s;
-  transition: opacity 0.25s 0.25s;
-}
-.el:hover .el__index-back {
-  -webkit-transition: opacity 0.25s;
-  transition: opacity 0.25s;
-  opacity: 1;
-}
-.el__index-overlay {
-  overflow: hidden;
-  position: relative;
-  -webkit-transform: translate3d(0, 100%, 0);
-          transform: translate3d(0, 100%, 0);
-  -webkit-transition: -webkit-transform 0.5s 0.1s;
-  transition: -webkit-transform 0.5s 0.1s;
-  transition: transform 0.5s 0.1s;
-  transition: transform 0.5s 0.1s, -webkit-transform 0.5s 0.1s;
-  color: transparent;
-}
-.el__index-overlay:before {
-  content: attr(data-index);
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  color: #fff;
-  -webkit-transform: translate3d(0, -100%, 0);
-          transform: translate3d(0, -100%, 0);
-  -webkit-transition: -webkit-transform 0.5s 0.1s;
-  transition: -webkit-transform 0.5s 0.1s;
-  transition: transform 0.5s 0.1s;
-  transition: transform 0.5s 0.1s, -webkit-transform 0.5s 0.1s;
-}
-.el:hover .el__index-overlay {
-  -webkit-transform: translate3d(0, 0, 0);
-          transform: translate3d(0, 0, 0);
-}
-.el:hover .el__index-overlay:before {
-  -webkit-transform: translate3d(0, 0, 0);
-          transform: translate3d(0, 0, 0);
-}
-.el:nth-child(1) {
-  -webkit-transform: translate3d(0%, 0, 0);
-          transform: translate3d(0%, 0, 0);
-  -webkit-transform-origin: 50% 50%;
-          transform-origin: 50% 50%;
-}
-.cont.s--el-active .el:nth-child(1):not(.s--active) {
-  -webkit-transform: scale(0.5) translate3d(0%, 0, 0);
-          transform: scale(0.5) translate3d(0%, 0, 0);
-  opacity: 0;
-  -webkit-transition: opacity 0.95s, -webkit-transform 0.95s;
-  transition: opacity 0.95s, -webkit-transform 0.95s;
-  transition: transform 0.95s, opacity 0.95s;
-  transition: transform 0.95s, opacity 0.95s, -webkit-transform 0.95s;
-}
-.el:nth-child(1) .el__inner {
-  -webkit-transition-delay: 0s;
-          transition-delay: 0s;
-}
-.el:nth-child(1) .el__bg {
-  -webkit-transform: translate3d(0%, 0, 0);
-          transform: translate3d(0%, 0, 0);
-}
-.el:nth-child(1) .el__bg:before {
-  -webkit-transition-delay: 0s;
-          transition-delay: 0s;
-  background-image: url('@/assets/images/a.jpg');
-}
-.el:nth-child(2) {
-  -webkit-transform: translate3d(105.2083333333%, 0, 0);
-          transform: translate3d(105.2083333333%, 0, 0);
-  -webkit-transform-origin: 155.2083333333% 50%;
-          transform-origin: 155.2083333333% 50%;
-}
-.cont.s--el-active .el:nth-child(2):not(.s--active) {
-  -webkit-transform: scale(0.5) translate3d(105.2083333333%, 0, 0);
-          transform: scale(0.5) translate3d(105.2083333333%, 0, 0);
-  opacity: 0;
-  -webkit-transition: opacity 0.95s, -webkit-transform 0.95s;
-  transition: opacity 0.95s, -webkit-transform 0.95s;
-  transition: transform 0.95s, opacity 0.95s;
-  transition: transform 0.95s, opacity 0.95s, -webkit-transform 0.95s;
-}
-.el:nth-child(2) .el__inner {
-  -webkit-transition-delay: 0.1s;
-          transition-delay: 0.1s;
-}
-.el:nth-child(2) .el__bg {
-  -webkit-transform: translate3d(-19.2%, 0, 0);
-          transform: translate3d(-19.2%, 0, 0);
-}
-.el:nth-child(2) .el__bg:before {
-  -webkit-transition-delay: 0.1s;
-          transition-delay: 0.1s;
-  background-image: url("@/assets/images/b.jpg");
-}
-.el:nth-child(3) {
-  -webkit-transform: translate3d(210.4166666667%, 0, 0);
-          transform: translate3d(210.4166666667%, 0, 0);
-  -webkit-transform-origin: 260.4166666667% 50%;
-          transform-origin: 260.4166666667% 50%;
-}
-.cont.s--el-active .el:nth-child(3):not(.s--active) {
-  -webkit-transform: scale(0.5) translate3d(210.4166666667%, 0, 0);
-          transform: scale(0.5) translate3d(210.4166666667%, 0, 0);
-  opacity: 0;
-  -webkit-transition: opacity 0.95s, -webkit-transform 0.95s;
-  transition: opacity 0.95s, -webkit-transform 0.95s;
-  transition: transform 0.95s, opacity 0.95s;
-  transition: transform 0.95s, opacity 0.95s, -webkit-transform 0.95s;
-}
-.el:nth-child(3) .el__inner {
-  -webkit-transition-delay: 0.2s;
-          transition-delay: 0.2s;
-}
-.el:nth-child(3) .el__bg {
-  -webkit-transform: translate3d(-38.4%, 0, 0);
-          transform: translate3d(-38.4%, 0, 0);
-}
-.el:nth-child(3) .el__bg:before {
-  -webkit-transition-delay: 0.2s;
-          transition-delay: 0.2s;
-  background-image: url("@/assets/images/c.jpg");
-}
-.el:nth-child(4) {
-  -webkit-transform: translate3d(315.625%, 0, 0);
-          transform: translate3d(315.625%, 0, 0);
-  -webkit-transform-origin: 365.625% 50%;
-          transform-origin: 365.625% 50%;
-}
-.cont.s--el-active .el:nth-child(4):not(.s--active) {
-  -webkit-transform: scale(0.5) translate3d(315.625%, 0, 0);
-          transform: scale(0.5) translate3d(315.625%, 0, 0);
-  opacity: 0;
-  -webkit-transition: opacity 0.95s, -webkit-transform 0.95s;
-  transition: opacity 0.95s, -webkit-transform 0.95s;
-  transition: transform 0.95s, opacity 0.95s;
-  transition: transform 0.95s, opacity 0.95s, -webkit-transform 0.95s;
-}
-.el:nth-child(4) .el__inner {
-  -webkit-transition-delay: 0.3s;
-          transition-delay: 0.3s;
-}
-.el:nth-child(4) .el__bg {
-  -webkit-transform: translate3d(-57.6%, 0, 0);
-          transform: translate3d(-57.6%, 0, 0);
-}
-.el:nth-child(4) .el__bg:before {
-  -webkit-transition-delay: 0.3s;
-          transition-delay: 0.3s;
-  background-image: url("@/assets/images/d.jpg");
-}
-.el:nth-child(5) {
-  -webkit-transform: translate3d(420.8333333333%, 0, 0);
-          transform: translate3d(420.8333333333%, 0, 0);
-  -webkit-transform-origin: 470.8333333333% 50%;
-          transform-origin: 470.8333333333% 50%;
-}
-.cont.s--el-active .el:nth-child(5):not(.s--active) {
-  -webkit-transform: scale(0.5) translate3d(420.8333333333%, 0, 0);
-          transform: scale(0.5) translate3d(420.8333333333%, 0, 0);
-  opacity: 0;
-  -webkit-transition: opacity 0.95s, -webkit-transform 0.95s;
-  transition: opacity 0.95s, -webkit-transform 0.95s;
-  transition: transform 0.95s, opacity 0.95s;
-  transition: transform 0.95s, opacity 0.95s, -webkit-transform 0.95s;
-}
-.el:nth-child(5) .el__inner {
-  -webkit-transition-delay: 0.4s;
-          transition-delay: 0.4s;
-}
-.el:nth-child(5) .el__bg {
-  -webkit-transform: translate3d(-76.8%, 0, 0);
-          transform: translate3d(-76.8%, 0, 0);
-}
-.el:nth-child(5) .el__bg:before {
-  -webkit-transition-delay: 0.4s;
-          transition-delay: 0.4s;
-  background-image: url("@/assets/images/e.jpg");
-}
-.el:hover .el__bg:after {
-  opacity: 0;
-}
+
+/* Specific active item styling */
 .el.s--active {
   z-index: 1;
-  width: 100%;
+  width: 60%; /* Active element takes more width */
   -webkit-transform: translate3d(0, 0, 0);
           transform: translate3d(0, 0, 0);
   -webkit-transition: width 0.7s 0.7s, z-index 0s, -webkit-transform 0.6s;
   transition: width 0.7s 0.7s, z-index 0s, -webkit-transform 0.6s;
   transition: transform 0.6s, width 0.7s 0.7s, z-index 0s;
-  transition: transform 0.6s, width 0.7s 0.7s, z-index 0s, -webkit-transform 0.6s;
-}
-.el.s--active .el__bg {
-  -webkit-transform: translate3d(0, 0, 0);
-          transform: translate3d(0, 0, 0);
-  -webkit-transition: -webkit-transform 0.6s;
-  transition: -webkit-transform 0.6s;
-  transition: transform 0.6s;
-  transition: transform 0.6s, -webkit-transform 0.6s;
-}
-.el.s--active .el__bg:before {
-  -webkit-transition-delay: 0.6s;
-          transition-delay: 0.6s;
-  -webkit-transform: scale(1.1);
-          transform: scale(1.1);
+  transition: transform 0.6s, width 0.7s 0.7s, z-index 0s, transform 0.6s, width 0.7s 0.7s, z-index 0s;
 }
 
-.icon-link {
+/* Background image styling */
+.el__bg {
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  background-size: cover;
+  background-position: center;
   position: absolute;
-  left: 5px;
-  bottom: 5px;
-  width: 32px;
-}
-.icon-link img {
+  top: 0;
+  left: 0;
   width: 100%;
-  vertical-align: top;
+  height: 100%;
+  z-index: 1;
 }
-.icon-link--twitter {
-  left: auto;
-  right: 5px;
+
+/* Adjustments for content display */
+.el__content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: rgba(0,0,0,0.7); /* Dark overlay */
+  color: white;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 2;
 }
+
+.el.s--active .el__content {
+  opacity: 1;
+}
+
+.el__text h1 {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  color: #FFECB3;
+}
+
+.el__text p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  text-align: center;
+  max-width: 600px;
+  margin-bottom: 20px;
+}
+
+.content-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #8D6E63;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.content-button:hover {
+  background-color: #A1887F;
+}
+
+.el__close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.el.s--active .el__close-btn {
+  opacity: 1;
+}
+
+.el__close-btn::before, .el__close-btn::after {
+  content: '';
+  position: absolute;
+  width: 70%;
+  height: 2px;
+  background-color: #4E342E;
+}
+
+.el__close-btn::before { transform: rotate(45deg); }
+.el__close-btn::after { transform: rotate(-45deg); }
+
+/* About Museum Section */
+.about-museum-section {
+  padding: 80px 20px;
+  background-color: #EDE7E4; /* Light, warm background */
+  text-align: center;
+  margin-top: 50px;
+}
+
+.about-museum-section h2 {
+  font-family: 'Georgia', serif;
+  font-size: 2.8rem;
+  color: #4E342E;
+  margin-bottom: 30px;
+}
+
+.about-museum-section p {
+  max-width: 800px;
+  margin: 0 auto 15px auto;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #555;
+}
+
+/* Ensure images for sections (a.jpg, b.jpg, etc.) exist in assets/images */
 </style>

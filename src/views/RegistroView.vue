@@ -1,16 +1,17 @@
 <template>
-  <div class="registro-wrap">
-    <div class="registro-html">
-      <div class="registro-form">
-        <div class="sign-up-htm">
-          <h2 class="form-title">Registro Museo Virtual</h2>
+  <div class="auth-page">
+    <div class="auth-container">
+      <div class="logo-museo"></div>
+      <h1>MUSEO VIRTUAL</h1>
+
+      <div class="auth-box">
+        <div class="auth-form">
+          <h2 class="form-title">Registro de Usuario</h2>
           
-          <!-- Mensaje de error -->
           <div v-if="errorMessage" class="error-message">
             {{ errorMessage }}
           </div>
           
-          <!-- Formulario -->
           <div class="group">
             <label for="displayName" class="label">Nombre completo</label>
             <input 
@@ -45,7 +46,7 @@
           </div>
           
           <div class="group">
-            <label for="confirmPassword" class="label">Confirmar contraseña</label>
+            <label for="confirmPassword" class="label">Confirmar Contraseña</label>
             <input 
               id="confirmPassword" 
               type="password" 
@@ -57,17 +58,18 @@
           
           <div class="group">
             <button 
-              class="button"
+              type="submit" 
+              class="auth-button" 
               @click="handleRegister"
               :disabled="isLoading"
             >
               <span v-if="!isLoading">Registrarse</span>
-              <span v-else>Registrando...</span>
+              <span v-else><i class="spinner"></i> Registrando...</span>
             </button>
           </div>
           
-          <div class="login-link">
-            ¿Ya tienes cuenta? <router-link to="/login">Inicia sesión</router-link>
+          <div class="additional-options">
+            <router-link to="/login" class="auth-link">¿Ya tienes cuenta? Inicia Sesión</router-link>
           </div>
         </div>
       </div>
@@ -76,174 +78,245 @@
 </template>
 
 <script>
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "@/firebase";
+import { ref } from 'vue';
+import { auth, db } from '@/firebase/init'; // Import Firebase auth and db
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore'; // For Firestore
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'RegistroView',
-  data() {
-    return {
-      displayName: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      errorMessage: '',
-      isLoading: false
-    };
-  },
-  methods: {
-    async handleRegister() {
-      // Validaciones básicas
-      if (!this.displayName || !this.email || !this.password) {
-        this.errorMessage = 'Todos los campos son obligatorios';
+  setup() {
+    const displayName = ref('');
+    const email = ref('');
+    const password = ref('');
+    const confirmPassword = ref('');
+    const errorMessage = ref('');
+    const isLoading = ref(false);
+    const router = useRouter();
+
+    const handleRegister = async () => {
+      errorMessage.value = '';
+      isLoading.value = true;
+
+      if (password.value.length < 6) {
+        errorMessage.value = 'La contraseña debe tener al menos 6 caracteres.';
+        isLoading.value = false;
         return;
       }
-      
-      if (this.password !== this.confirmPassword) {
-        this.errorMessage = 'Las contraseñas no coinciden';
+
+      if (password.value !== confirmPassword.value) {
+        errorMessage.value = 'Las contraseñas no coinciden.';
+        isLoading.value = false;
         return;
       }
-      
-      if (this.password.length < 6) {
-        this.errorMessage = 'La contraseña debe tener al menos 6 caracteres';
-        return;
-      }
-      
-      this.isLoading = true;
-      this.errorMessage = '';
-      
+
       try {
-        // 1. Crear usuario en Firebase Authentication
-        const userCredential = await createUserWithEmailAndPassword(
-          auth,
-          this.email,
-          this.password
-        );
-        
-        // 2. Guardar información adicional en Firestore
-        await setDoc(doc(db, 'users', userCredential.user.uid), {
-          displayName: this.displayName,
-          email: this.email,
-          createdAt: new Date(),
-          favorites: [],
-          role: 'user' // Puedes usar esto para permisos especiales
+        const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
+        const user = userCredential.user;
+
+        // Update user profile with display name
+        await updateProfile(user, {
+          displayName: displayName.value
         });
-        
-        // 3. Redirigir al usuario
-        this.$router.push('/galeria');
-        
+
+        // Optionally save additional user data to Firestore
+        await setDoc(doc(db, "users", user.uid), {
+          displayName: displayName.value,
+          email: user.email,
+          createdAt: new Date()
+          // You can add more fields here like favorites
+        });
+
+        router.push('/'); // Redirect to home on successful registration
       } catch (error) {
-        console.error('Error en registro:', error);
-        
-        // Manejo de errores específicos
+        console.error("Registration error:", error.code, error.message);
         switch (error.code) {
           case 'auth/email-already-in-use':
-            this.errorMessage = 'Este correo ya está registrado';
+            errorMessage.value = 'Este correo electrónico ya está registrado.';
             break;
           case 'auth/invalid-email':
-            this.errorMessage = 'Correo electrónico inválido';
+            errorMessage.value = 'Formato de correo electrónico inválido.';
             break;
           case 'auth/weak-password':
-            this.errorMessage = 'La contraseña es demasiado débil';
+            errorMessage.value = 'La contraseña es demasiado débil.';
             break;
           default:
-            this.errorMessage = 'Ocurrió un error al registrar. Intenta nuevamente.';
+            errorMessage.value = 'Ocurrió un error al registrarse. Inténtalo de nuevo.';
         }
       } finally {
-        this.isLoading = false;
+        isLoading.value = false;
       }
-    }
-  }
+    };
+
+    return {
+      displayName,
+      email,
+      password,
+      confirmPassword,
+      errorMessage,
+      isLoading,
+      handleRegister,
+    };
+  },
 };
 </script>
 
 <style scoped>
-.registro-wrap {
-  width: auto;
-  margin: auto;
-  margin-top: 50px;
-  max-width: 525px;
-  min-height: 520px;
-  position: relative;
-  box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24), 
-              0 17px 50px 0 rgba(251, 252, 246, 0.19);
-  background-color: #e9bd84;
+/* Reusing most styles from login.vue for consistency */
+/* Only add new styles or overrides specific to registro.vue */
+
+.auth-page {
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('@/assets/auth_bg.jfif') no-repeat center center/cover;
+  min-height: calc(100vh - 80px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 450px;
+  background-color: rgba(255, 255, 255, 0.95);
   border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
   padding: 40px;
+  color: #4E342E;
+}
+
+.logo-museo {
+  width: 100px;
+  height: 100px;
+  background-image: url('@/assets/logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-bottom: 20px;
+}
+
+.auth-container h1 {
+  font-family: 'Georgia', serif;
+  font-size: 2.2rem;
+  margin-bottom: 30px;
+  color: #4E342E;
+}
+
+.auth-box {
+  width: 100%;
 }
 
 .form-title {
   text-align: center;
-  color: #4e342e;
+  color: #4E342E;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.group {
   margin-bottom: 20px;
 }
 
-.registro-form .group {
-  margin: 20px 0;
-}
-
-.registro-form .group .label,
-.registro-form .group .input,
-.registro-form .group .button {
-  width: 100%;
-  color: #201d0b;
+.group label {
   display: block;
-}
-
-.registro-form .group .input,
-.registro-form .group .button {
-  border: none;
-  padding: 15px 20px;
-  border-radius: 25px;
-  background: rgba(253, 225, 163, 0.1);
-}
-
-.registro-form .group .label {
-  color: #110303;
-  font-size: 12px;
-  margin-bottom: 5px;
-}
-
-.registro-form .group .button {
-  background-color: #4e342e;
-  color: #fff;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
   font-weight: bold;
+  color: #6D4C41;
+}
+
+.group input {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid #BFAe9E;
+  font-size: 1rem;
+  background-color: #F8F8F8;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+.group input:focus {
+  border-color: #8C5E3C;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(141, 110, 99, 0.3);
+}
+
+.auth-button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  background: #4E342E;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  font-size: 1.1rem;
+  transition: background 0.3s ease, transform 0.2s ease;
+  margin-top: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
-.registro-form .group .button:hover {
-  background-color: #6d4c41;
+.auth-button:hover {
+  background: #6D4C41;
+  transform: translateY(-2px);
 }
 
-.registro-form .group .button:disabled {
-  background-color: #cccccc;
+.auth-button:disabled {
+  background: #A1887F;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.spinner {
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 3px solid #fff;
+  width: 18px;
+  height: 18px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .error-message {
-  color: #d32f2f;
-  background-color: #ffebee;
+  color: #D32F2F;
+  background-color: #FFEBEE;
   padding: 10px;
   border-radius: 5px;
-  margin-bottom: 15px;
+  margin: 15px 0;
   text-align: center;
-  font-size: 14px;
+  font-size: 0.95rem;
+  border: 1px solid #EF9A9A;
 }
 
-.login-link {
+.additional-options {
   text-align: center;
-  margin-top: 20px;
-  color: #4e342e;
+  margin-top: 25px;
+  font-size: 0.95rem;
 }
 
-.login-link a {
-  color: #1e88e5;
+.auth-link {
+  color: #6D4C41;
   text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
 }
 
-.login-link a:hover {
+.auth-link:hover {
+  color: #8C5E3C;
   text-decoration: underline;
 }
 </style>
