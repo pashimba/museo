@@ -4,7 +4,7 @@
       v-if="mostrarBienvenida"
       @animation-ended="mostrarBienvenida = false"
     />
-
+<!-- hola bobois -->
     <div v-else class="main-content">
       <header class="u-clearfix u-header u-header" id="header">
         <div class="u-clearfix u-sheet u-sheet-1">
