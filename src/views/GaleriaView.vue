@@ -268,7 +268,7 @@ export default {
             title: "El Pensador",
             artist: "Auguste Rodin",
             imageUrl:
-              "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Auguste_Rodin_-_The_Thinker_-_Walters_275211.jpg/800px-Auguste_Rodin_-_The_Thinker_-_Walters_275211.jpg",
+              "https://cdn.forbes.com.mx/2022/06/Pensador-de-Rodin-subasta-1024x652.png",
             description: "Escultura de bronce de un hombre meditando.",
             period: "Impresionismo",
             category: "Escultura",
@@ -292,7 +292,7 @@ export default {
             title: "La Venus de Milo",
             artist: "Antigua Grecia (atribuida a Alexandros de Antioquía)",
             imageUrl:
-              "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Venus_de_Milo_Louvre_Ma399_n2.jpg/800px-Venus_de_Milo_Louvre_Ma399_n2.jpg",
+              "https://www.grandesmuseos.news/images/98.png",
             description: "Estatua griega de mármol de Afrodita.",
             period: "Helenístico",
             category: "Escultura",

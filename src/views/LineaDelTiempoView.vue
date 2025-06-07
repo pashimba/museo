@@ -1,9 +1,9 @@
 <template>
   <div class="timeline-body">
     <div class="header-section">
-      <h1 class="main-title">{{ $t('timeline.mainTitle') }}</h1>
+      <h1 class="main-title">Línea de Tiempo de Bolivia</h1>
       <p class="main-description">
-        {{ $t("timeline.mainDescription") }}
+        Un viaje interactivo a través de los momentos que han forjado la historia de nuestra nación.
       </p>
     </div>
 
