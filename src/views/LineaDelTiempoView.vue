@@ -191,6 +191,7 @@ export default {
   background-color: #f8f5ee; /* Tono crema */
   min-height: 100vh;
   box-sizing: border-box;
+  font-family: "Georgia", serif;
 }
 
 .timeline-header {

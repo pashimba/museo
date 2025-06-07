@@ -1,42 +1,50 @@
 <template>
-  <div class="cont s--inactive">
-    <div class="cont__inner">
-      <div
-        class="el"
-        v-for="(section, index) in sections"
-        :key="index"
-        @click="activateSection(index)"
-        :class="{ 's--active': activeIndex === index }"
-      >
-        <div class="el__overflow">
-          <div class="el__inner">
+  <section class="about-us-section">
+    <div class="container">
+      <!-- Columna de Imágenes (Carrusel) -->
+      <div class="image-collage">
+        <!-- Elementos decorativos para el marco -->
+        <div class="decorative-frame-back"></div>
+        <div class="decorative-frame-front"></div>
+        <div class="image-wrapper">
+          <transition name="fade" mode="out-in">
             <div
-              class="el__bg"
-              :style="{ backgroundImage: `url(${section.image})` }"
+              :key="currentImageIndex"
+              class="carousel-image"
+              :style="{
+                backgroundImage: `url(${sections[currentImageIndex].image})`,
+              }"
             ></div>
-            <div class="el__preview-cont">
-              <h2 class="el__heading">{{ section.title }}</h2>
-            </div>
-            <div class="el__content">
-              <div class="el__text">
-                <h1>{{ section.title }}</h1>
-                <p>{{ section.text }}</p>
-              </div>
-              <div class="el__close-btn" @click.stop="deactivateSection"></div>
-            </div>
-          </div>
-        </div>
-        <div class="el__index">
-          <div class="el__index-back">{{ index + 1 }}</div>
-          <div class="el__index-front">
-            <div class="el__index-overlay" :data-index="index + 1">
-              {{ index + 1 }}
-            </div>
-          </div>
+          </transition>
         </div>
       </div>
+
+      <!-- Columna de Texto -->
+      <div class="text-content">
+        <transition name="fade" mode="out-in">
+          <div :key="currentImageIndex">
+            <p class="pre-title">{{ sections[currentImageIndex].preTitle }}</p>
+            <h2 class="title">{{ sections[currentImageIndex].title }}</h2>
+            <p class="description">
+              {{ sections[currentImageIndex].description }}
+            </p>
+            <ul class="features-list">
+              <li
+                v-for="feature in sections[currentImageIndex].features"
+                :key="feature"
+              >
+                {{ feature }}
+              </li>
+            </ul>
+          </div>
+        </transition>
+        <router-link to="/about" class="discover-more-btn">
+          Descubre Más
+          <span class="arrow">&rarr;</span>
+        </router-link>
+      </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
@@ -44,329 +52,313 @@ export default {
   name: "HomeView",
   data() {
     return {
-      activeIndex: null, // Para controlar qué sección está activa
+      currentImageIndex: 0,
+      carouselInterval: null,
       sections: [
         {
-          title: "Identidad",
+          preTitle: "NUESTRA IDENTIDAD",
+          title: "El Alma de Nuestra Comunidad",
+          description:
+            "Explora las raíces que nos definen y los valores que nos unen. Nuestra identidad se teje con hilos de historia, tradición y un espíritu inquebrantable.",
+          features: [
+            "Artefactos que narran nuestra historia.",
+            "Testimonios de generaciones pasadas.",
+            "Símbolos de unidad y pertenencia.",
+          ],
           image: require("@/assets/images/a.jpg"),
-          text: "La identidad es el alma de nuestra comunidad, reflejada en nuestra historia, costumbres y valores únicos. En el museo, exploramos cómo se ha forjado la identidad boliviana a través de los siglos, desde las culturas precolombinas hasta la nación moderna.",
         },
         {
-          title: "Culturas",
+          preTitle: "NUESTRAS CULTURAS",
+          title: "Un Mosaico de Tradiciones Vivas",
+          description:
+            "Celebra la diversidad que enriquece nuestro patrimonio. Cada cultura es una ventana a mundos fascinantes, llena de color, música y sabiduría ancestral.",
+          features: [
+            "Vestimentas y textiles tradicionales.",
+            "Instrumentos musicales únicos.",
+            "Rituales y celebraciones ancestrales.",
+          ],
           image: require("@/assets/images/b.jpg"),
-          text: "Bolivia es un mosaico de culturas. Este espacio te invita a descubrir la diversidad de pueblos indígenas, sus tradiciones, lenguas y cosmovisiones que han enriquecido el patrimonio del país. Explora las raíces de nuestra plurinacionalidad.",
         },
         {
-          title: "Historia",
+          preTitle: "NUESTRA HISTORIA",
+          title: "Un Viaje a Través del Tiempo",
+          description:
+            "Recorre los hitos que marcaron nuestro pasado, desde imperios antiguos hasta revoluciones que forjaron la nación que somos hoy.",
+          features: [
+            "Mapas y documentos históricos.",
+            "Reliquias de batallas y conquistas.",
+            "Líneas de tiempo interactivas.",
+          ],
           image: require("@/assets/images/c.jpg"),
-          text: "Un viaje a través del tiempo, desde las civilizaciones antiguas como Tiahuanaco, el Imperio Inca, la colonia española, hasta la independencia y la formación de la República de Bolivia. Conoce los hitos y personajes que forjaron nuestro destino.",
         },
         {
-          title: "Arte",
+          preTitle: "NUESTRO ARTE",
+          title: "Creatividad que Trasciende Épocas",
+          description:
+            "Maravíllate con la expresión artística que ha florecido en nuestra tierra. Obras maestras que capturan la belleza, la lucha y los sueños de nuestra gente.",
+          features: [
+            "Pinturas y esculturas maestras.",
+            "Cerámicas con diseños milenarios.",
+            "Fotografías que capturan momentos.",
+          ],
           image: require("@/assets/images/d.jpg"),
-          text: "Sumérgete en la riqueza del arte boliviano. Desde el arte rupestre prehistórico, las expresiones coloniales con su sincretismo religioso, hasta las vanguardias del siglo XX y el arte contemporáneo. Un reflejo de la creatividad y visión del artista boliviano.",
         },
         {
-          title: "Patrimonio",
+          preTitle: "NUESTRO PATRIMONIO",
+          title: "Nuestro Legado para el Futuro",
+          description:
+            "Comprende la importancia de preservar nuestros tesoros culturales y naturales para las futuras generaciones. Un legado de valor incalculable.",
+          features: [
+            "Sitios arqueológicos protegidos.",
+            "Técnicas artesanales preservadas.",
+            "Proyectos de conservación y restauración.",
+          ],
           image: require("@/assets/images/e.jpg"),
-          text: "El patrimonio de Bolivia es vasto y diverso, incluyendo sitios arqueológicos, ciudades coloniales, tradiciones vivas y una biodiversidad única. Este recorrido resalta la importancia de preservar y valorar este legado invaluable para las futuras generaciones.",
         },
       ],
     };
   },
-  methods: {
-    activateSection(index) {
-      this.activeIndex = index;
-    },
-    deactivateSection() {
-      this.activeIndex = null;
-    },
+  mounted() {
+    // Inicia el carrusel automático
+    this.carouselInterval = setInterval(() => {
+      this.currentImageIndex =
+        (this.currentImageIndex + 1) % this.sections.length;
+    }, 5000); // Cambia cada 5 segundos para dar tiempo a leer
+  },
+  beforeUnmount() {
+    // Limpia el intervalo al destruir el componente
+    clearInterval(this.carouselInterval);
   },
 };
 </script>
 
 <style scoped>
-/* Estilos para el efecto de carrusel en la página de inicio */
-.cont {
-  position: absolute;
+/* Importamos una fuente más elegante que se ajusta al diseño */
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500&display=swap");
+
+:root {
+  --color-primary: #333333;
+  --color-secondary: #888888;
+  --color-accent: #de8e1e; /* Tono dorado/beige del diseño */
+  --color-background: orange;
+  --font-primary: "Playfair Display", serif;
+  --font-secondary: "Poppins", sans-serif;
+}
+
+.about-us-section {
+  background-color: rgba(255, 210, 171, 0.27);
   width: 100%;
-  height: 100%;
-  overflow: hidden;
+  padding: 100px 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  perspective: 1000px;
-  background-color: #f0f2f5; /* Fondo más claro */
+  min-height: 100vh;
+  overflow: hidden;
 }
 
-.cont.s--inactive {
-  /* Cuando no hay ninguna sección activa */
-}
-
-.cont.s--active {
-  /* Cuando una sección está activa (si decides usar una clase en el contenedor principal) */
-}
-
-.cont__inner {
-  position: relative;
+.container {
+  display: flex;
   width: 100%;
-  height: 100%;
+  max-width: 1100px;
+  padding: 0 20px;
+  align-items: center;
+  gap: 60px;
 }
 
-.el {
+/* --- Columna de Imágenes --- */
+.image-collage {
+  flex: 1;
+  position: relative;
+  height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ✨ NUEVO: Marco decorativo mejorado */
+.decorative-frame-back {
+  content: "";
   position: absolute;
-  left: 0;
+  z-index: 0;
+  width: 85%;
+  height: 85%;
+  background-color: #e1bb8d; /* Un color beige más claro */
   top: 0;
-  width: 20%; /* 5 secciones, 100% / 5 = 20% */
-  height: 100%;
-  background-color: #fff;
-  transition: transform 0.6s ease-out, width 0.7s ease-out 0.7s, z-index 0s 0.7s;
-  cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
-  border-right: 1px solid #f0f0f0;
+  left: 0;
+}
+.decorative-frame-front {
+  content: "";
+  position: absolute;
+  z-index: 2; /* Por encima de la imagen */
+  width: 90%;
+  height: 90%;
+  border: 3px solid var(--color-accent);
+  bottom: 0;
+  right: 0;
+  pointer-events: none; /* Para no interferir con el mouse */
 }
 
-.el:nth-child(1) {
-  transform: translate3d(0%, 0, 0);
-  z-index: 5;
-}
-.el:nth-child(2) {
-  transform: translate3d(100%, 0, 0);
-  z-index: 4;
-}
-.el:nth-child(3) {
-  transform: translate3d(200%, 0, 0);
-  z-index: 3;
-}
-.el:nth-child(4) {
-  transform: translate3d(300%, 0, 0);
-  z-index: 2;
-}
-.el:nth-child(5) {
-  transform: translate3d(400%, 0, 0);
+.image-wrapper {
+  position: relative;
+  width: 90%;
+  height: 90%;
   z-index: 1;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
-/* Estado activo */
-.el.s--active {
-  z-index: 10; /* Asegura que la sección activa esté encima */
-  width: 100%;
-  transform: translate3d(0, 0, 0);
-  transition: width 0.7s ease-out 0.7s, transform 0.6s ease-out; /* Ajusta transiciones */
-}
-
-/* Ajuste de posición para elementos no activos cuando uno está activo */
-.el.s--active ~ .el {
-  transform: translate3d(
-    100%,
-    0,
-    0
-  ); /* Mueve los siguientes elementos fuera de vista */
-}
-
-/* El contenido del elemento */
-.el__overflow {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-}
-
-.el__inner {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.el__bg {
+.carousel-image {
   position: absolute;
-  left: 0;
   top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   background-size: cover;
   background-position: center;
-  transition: transform 0.6s ease-out; /* Transición para el zoom */
 }
 
-.el__bg:after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4); /* Overlay oscuro */
-  transition: opacity 0.6s ease-out;
+/* Transición de fundido para el carrusel y el texto */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.8s ease-in-out;
 }
-
-.el.s--active .el__bg {
-  transform: scale(1.05); /* Ligerísimo zoom en la imagen activa */
-}
-
-.el.s--active .el__bg:after {
-  opacity: 0; /* Quita el overlay oscuro en la sección activa */
-}
-
-.el__preview-cont,
-.el__content {
-  position: absolute;
-  color: #fff;
-  text-align: center;
-  transition: opacity 0.6s ease-out;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-.el__preview-cont {
-  opacity: 1;
-  z-index: 20;
-}
-
-.el.s--active .el__preview-cont {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
-  pointer-events: none; /* Deshabilita clics en el preview cuando está activo */
 }
 
-.el__content {
-  opacity: 0;
-  z-index: 20;
+/* --- Columna de Texto --- */
+.text-content {
+  flex: 1;
+  text-align: left;
+  min-height: 400px; /* Asegura altura mínima para evitar saltos */
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7); /* Fondo para el contenido extendido */
 }
 
-.el.s--active .el__content {
-  opacity: 1;
+.text-content > div {
+  flex-grow: 1;
 }
 
-.el__heading {
-  font-size: 2.5rem;
+.pre-title {
+  font-family: var(--font-secondary);
+  color: var(--color-accent);
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-size: 0.9rem;
   margin-bottom: 10px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.el__text h1 {
-  font-size: 3rem;
+.title {
+  font-family: var(--font-primary);
+  color: var(--color-primary);
+  font-size: 2.8rem;
+  line-height: 1.2;
   margin-bottom: 20px;
+  min-height: 70px; /* Evita saltos cuando el título tiene 1 o 2 líneas */
 }
 
-.el__text p {
-  font-size: 1.2rem;
-  line-height: 1.6;
-  max-width: 700px;
-  margin: 0 auto;
+.description {
+  font-family: var(--font-secondary);
+  color: var(--color-secondary);
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 30px;
 }
 
-.el__close-btn {
+.features-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 40px;
+  font-family: var(--font-secondary);
+}
+
+.features-list li {
+  color: var(--color-primary);
+  margin-bottom: 15px;
+  position: relative;
+  padding-left: 25px;
+}
+
+.features-list li::before {
+  content: "✔";
+  color: var(--color-accent);
   position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 40px;
-  height: 40px;
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  cursor: pointer;
-  z-index: 30;
-  opacity: 0;
-  transition: opacity 0.3s ease-out;
+  left: 0;
+  top: 2px;
+  font-weight: bold;
 }
 
-.el.s--active .el__close-btn {
-  opacity: 1;
+.discover-more-btn {
+  display: inline-block;
+  background-color: var(--color-accent);
+  color: #a98f6c;
+  padding: 12px 30px;
+  text-decoration: none;
+  font-family: var(--font-secondary);
+  font-weight: 500;
+  border: #a98f6c solid 1px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  align-self: flex-start; /* Se alinea a la izquierda */
 }
 
-.el__close-btn:before,
-.el__close-btn:after {
-  content: "";
-  position: absolute;
-  width: 60%;
-  height: 2px;
-  background-color: #fff;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(45deg);
+.discover-more-btn:hover {
+  background-color: #a98f6c;
+  color: white;
+  transform: translateY(-3px);
 }
 
-.el__close-btn:after {
-  transform: translate(-50%, -50%) rotate(-45deg);
+.discover-more-btn .arrow {
+  margin-left: 10px;
+  transition: margin-left 0.3s ease;
 }
 
-.el__index {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  font-size: 1.5rem;
-  color: rgba(255, 255, 255, 0.5);
-  z-index: 25;
-  transition: opacity 0.6s ease-out;
+.discover-more-btn:hover .arrow {
+  margin-left: 15px;
 }
 
-.el.s--active .el__index {
-  opacity: 0; /* Oculta el índice cuando está activa */
-}
-
-/* Media Queries para responsividad */
-@media (max-width: 768px) {
-  .el {
+/* --- Responsividad --- */
+@media (max-width: 992px) {
+  .container {
+    flex-direction: column;
+    text-align: center;
+    gap: 40px;
+  }
+  .text-content {
+    align-items: center;
+    text-align: center;
+  }
+  .features-list li {
+    padding-left: 0;
+    text-align: left;
+    display: inline-block;
     width: 100%;
-    height: 20%;
-    transform: none !important; /* Resetea transformaciones para móviles */
-    position: relative; /* Ajusta para el flujo normal */
+    max-width: 400px;
+    padding-left: 25px;
   }
+  .discover-more-btn {
+    align-self: center; /* Se centra en móvil */
+  }
+  .title {
+    font-size: 2.2rem;
+    min-height: 0;
+  }
+}
 
-  .el:nth-child(1) {
-    top: 0%;
+@media (max-width: 576px) {
+  .about-us-section {
+    padding: 60px 0;
   }
-  .el:nth-child(2) {
-    top: 100%;
+  .image-collage {
+    height: 350px;
   }
-  .el:nth-child(3) {
-    top: 200%;
+  .title {
+    font-size: 1.8rem;
   }
-  .el:nth-child(4) {
-    top: 300%;
-  }
-  .el:nth-child(5) {
-    top: 400%;
-  }
-
-  .el.s--active {
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    transform: none;
-  }
-
-  .el.s--active ~ .el {
-    transform: translateY(
-      100%
-    ); /* Mueve los siguientes elementos hacia abajo */
-  }
-
-  .el__heading {
-    font-size: 2rem;
-  }
-
-  .el__text h1 {
-    font-size: 2.5rem;
-  }
-
-  .el__text p {
-    font-size: 1rem;
-    max-width: 90%;
-  }
-
-  .el__index {
-    display: none; /* Ocultar en móviles para simplicidad */
+  .description,
+  .features-list li {
+    font-size: 0.9rem;
   }
 }
 </style>
