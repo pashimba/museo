@@ -12,6 +12,7 @@
       <header class="main-header" :class="{ scrolled: isScrolled }">
         <nav class="navbar">
           <div class="navbar-container">
+            
             <router-link to="/" class="navbar-brand">Museo</router-link>
 
             <!-- Botón de Hamburguesa (Móvil) -->
@@ -63,6 +64,7 @@
                   >
                 </li>
               </ul>
+              <LanguageSwitcher />
             </div>
           </div>
         </nav>
@@ -84,11 +86,13 @@
 
 <script>
 import BienvenidaComponent from "@/components/BienvenidaComponent.vue";
+import LanguageSwitcher from "@/components/LanguageSwitcher.vue";
 
 export default {
   name: "App",
   components: {
     BienvenidaComponent,
+    LanguageSwitcher,
   },
   data() {
     return {
