@@ -153,10 +153,11 @@ h1 {
 }
 
 .login-box {
-  background-color: #e9bd84; /* Color de caja de login */
-  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.547); /* Color de caja de login */
+  border-radius: 15px;
+  border: #5c2905 solid 1px;
   padding: 40px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  /* box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); */
   width: 100%;
   max-width: 400px;
   box-sizing: border-box;
@@ -164,7 +165,7 @@ h1 {
 
 .form-title {
   text-align: center;
-  color: #4e342e;
+  color: white;
   margin-bottom: 30px;
   font-size: 2rem;
 }
@@ -176,16 +177,17 @@ h1 {
 .group label {
   display: block;
   margin-bottom: 8px;
-  color: #4e342e;
+  color: white;
   font-weight: bold;
   font-size: 0.95rem;
 }
 
 .group input {
+  background-color: rgba(237, 229, 229, 0.072);
   width: 100%;
   padding: 12px 15px;
-  border-radius: 5px;
-  border: 1px solid #bfae9e;
+  border-radius: 0px;
+  border-bottom: 1px solid #dbcfc3;
   font-size: 1rem;
   box-sizing: border-box;
   transition: border-color 0.3s;
@@ -237,14 +239,14 @@ h1 {
 }
 
 .additional-options .link {
-  color: #4e342e;
+  color: rgba(250, 212, 195, 0.735);
   text-decoration: none;
   font-size: 0.9rem;
   transition: color 0.3s;
 }
 
 .additional-options .link:hover {
-  color: #8c5e3c;
+  color: white;
   text-decoration: underline;
 }
 
