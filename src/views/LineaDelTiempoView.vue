@@ -208,6 +208,7 @@ export default {
 </script>
 
 <style scoped>
+/* Ultima version estable */
 /* Importar fuentes desde Google Fonts */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap");
 
