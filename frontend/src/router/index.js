@@ -8,8 +8,13 @@ import RegistroView from "../views/RegistroView.vue";
 import NotFound from "../views/NotFound.vue"; // Crea este archivo si lo usas
 import Museum3DView from "../views/Museum3DView.vue";
 import CeramicsGalleryView from "../views/CeramicsGalleryView.vue";
-
+import FaqView from "../views/FaqView.vue";
+import JuegoBoliviaView from "../views/JuegoBoliviaView.vue";
+import AgregarHechoView from "../views/AgregarHechoView.vue";
+import GuiaView from "../views/GuiaView.vue";
 const routes = [
+  
+  
   {
     path: "/",
     name: "home",
@@ -27,14 +32,29 @@ const routes = [
     component: GaleriaView,
   },
   {
-    path: "/linea-del-tiempo",
-    name: "linea-del-tiempo",
+    path: "/faq",
+    name: "faq",
+    component: FaqView,
+  },
+  {
+    path: "/lineadeltiempo",
+    name: "lineadeltiempo",
     component: LineaDelTiempoView,
+  },
+  {
+    path: "/guia",
+    name: "guia",
+    component: GuiaView,
   },
   {
     path: "/login",
     name: "login",
     component: LoginView,
+  },
+  {
+    path: "/juego",
+    name: "juego",
+    component: JuegoBoliviaView,
   },
   {
     // <-- ADD THIS NEW ROUTE
@@ -61,6 +81,13 @@ const routes = [
     name: "NotFound",
     component: NotFound,
   },
+
+  {
+  path: "/agregar-hecho",
+  name: "agregar-hecho",
+  component: AgregarHechoView,
+  meta: { requiresAuth: true, requiresAdmin: true }
+},
 ];
 
 const router = createRouter({

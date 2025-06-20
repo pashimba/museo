@@ -65,7 +65,7 @@ export default {
   },
   methods: {
     ...mapMutations(["SET_USER", "SET_ERROR", "SET_LOADING"]),
-  async handleLogin() {
+async handleLogin() {
   if (!this.email || !this.password) {
     this.SET_ERROR("Por favor, completa todos los campos.");
     return;
@@ -82,8 +82,12 @@ export default {
 
     const { token, user } = res.data;
 
-    // Guardar el token en localStorage
+    // Guardar el token y el usuario en localStorage
     localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+
+    console.log("🟢 Usuario guardado:", user);
+    console.log("📦 Desde localStorage:", JSON.parse(localStorage.getItem("user")));
 
     // Guardar usuario en Vuex
     this.SET_USER(user);

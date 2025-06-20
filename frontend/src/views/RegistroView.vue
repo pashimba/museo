@@ -133,11 +133,10 @@ export default {
         password: this.password,
       });
 
-      if (success) {
-        this.successMessage = "¡Registro exitoso!";
-        // Redirigir directamente, sin esperar
-        this.$router.push("/inicio");
-      }
+if (success) {
+  this.successMessage = "¡Registro exitoso!";
+  this.$router.push("/login"); // ✅ corregido aquí
+}
     },
   },
   created() {

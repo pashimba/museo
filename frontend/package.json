@@ -11,6 +11,7 @@
     "@google/model-viewer": "^4.1.0",
     "axios": "^1.9.0",
     "core-js": "^3.8.3",
+    "phaser": "^3.90.0",
     "swiper": "^11.2.8",
     "three": "^0.172.0",
     "vue": "^3.2.13",

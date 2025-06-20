@@ -4,8 +4,8 @@ import axios from "axios";
 
 export default createStore({
   state: {
-    user: null,
-    isAuthenticated: false,
+    user: JSON.parse(localStorage.getItem("user")) || null,  // ✅ Cargar user del localStorage
+    isAuthenticated: !!localStorage.getItem("user"),         // ✅ Estado persistente
     loading: false,
     error: null,
   },
@@ -33,18 +33,19 @@ export default createStore({
       commit("SET_ERROR", null);
       try {
         const res = await axios.post("http://localhost:3000/api/auth/login", {
-          correo: email,        // nombre de campo esperado por backend
-          contrasenia: password // nombre de campo esperado por backend
+          correo: email,
+          contrasenia: password,
         });
 
         const { token, user } = res.data;
 
-        localStorage.setItem("token", token);  // guardar token
-        commit("SET_USER", user);              // guardar usuario en estado
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user)); // ✅ Guardar user
+        commit("SET_USER", user);
         return true;
       } catch (err) {
         const msg =
-          err.response?.data?.error ||      // <-- capturar errores del backend
+          err.response?.data?.error ||
           err.response?.data?.message ||
           "Error al iniciar sesión.";
         commit("SET_ERROR", msg);
@@ -55,32 +56,33 @@ export default createStore({
     },
 
     logout({ commit }) {
-      localStorage.removeItem("token"); // eliminar token
+      localStorage.removeItem("token");
+      localStorage.removeItem("user"); // ✅ Limpiar también el user
       commit("CLEAR_AUTH_STATE");
     },
 
     async register({ commit }, { displayName, email, password }) {
-  commit("SET_LOADING", true);
-  commit("SET_ERROR", null);
-  try {
-    await axios.post("http://localhost:3000/api/auth/register", {
-      nombre: displayName,
-      correo: email,
-      contrasenia: password
-    });
+      commit("SET_LOADING", true);
+      commit("SET_ERROR", null);
+      try {
+        await axios.post("http://localhost:3000/api/auth/register", {
+          nombre: displayName,
+          correo: email,
+          contrasenia: password,
+        });
 
-    return true; // si quieres guardar usuario, puedes usar response.data.user
-  } catch (err) {
-    const msg =
-      err.response?.data?.error ||
-      err.response?.data?.message ||
-      (err.response?.data?.errors?.[0]?.msg ?? "Error al registrar usuario.");
-    commit("SET_ERROR", msg);
-    return false;
-  } finally {
-    commit("SET_LOADING", false);
-  }
-}
+        return true;
+      } catch (err) {
+        const msg =
+          err.response?.data?.error ||
+          err.response?.data?.message ||
+          (err.response?.data?.errors?.[0]?.msg ?? "Error al registrar usuario.");
+        commit("SET_ERROR", msg);
+        return false;
+      } finally {
+        commit("SET_LOADING", false);
+      }
+    },
   },
   getters: {
     isAuthenticated: (state) => state.isAuthenticated,

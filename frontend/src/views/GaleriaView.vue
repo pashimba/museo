@@ -72,6 +72,14 @@
           v-for="obra in obrasFiltradas"
           :key="obra.id"
         >
+          <button
+    v-if="isAdmin"
+    @click="eliminarHecho(obra.id)"
+    title="Eliminar obra"
+    class="btn-eliminar-obra"
+  >
+    &minus;
+  </button>
           <img
             :src="obra.imageUrl"
             :alt="obra.title"
@@ -107,6 +115,13 @@
           No se encontraron obras con los filtros aplicados.
         </p>
       </div>
+      <button
+  v-if="isAdmin"
+  class="boton-flotante"
+  @click="$router.push('/agregar-hecho')"
+>
+  +
+</button>
     </div>
 
     <div class="modal-overlay" v-if="mostrarModal" @click.self="cerrarModal">
@@ -320,7 +335,8 @@ async cargarObras() {
 
 <script>
 import FondoDinamico from "@/components/FondoDinamico.vue";
-import "@google/model-viewer"; // Importa el componente web de model-viewer
+import { mapGetters } from "vuex";
+import "@google/model-viewer";
 
 export default {
   name: "GaleriaView",
@@ -343,6 +359,10 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({ user: "currentUser" }),
+    isAdmin() {
+      return this.user?.id_rol === 1;
+    },
     obrasFiltradas() {
       let filtered = this.obras;
 
@@ -390,6 +410,19 @@ export default {
     },
   },
   methods: {
+        async eliminarHecho(id) {
+      if (!confirm("¿Seguro que deseas eliminar este hecho?")) return;
+      try {
+        const token = localStorage.getItem("token");
+        await fetch(`http://localhost:3000/api/hechos/${id}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        this.obras = this.obras.filter((o) => o.id !== id);
+      } catch (err) {
+        alert("Error al eliminar la obra.");
+      }
+    },
     estaAutenticado() {
       return !!localStorage.getItem("token");
     },
@@ -561,6 +594,7 @@ async toggleFavorito(obra) {
   },
   created() {
     this.cargarObras();
+    console.log("🧠 Usuario logueado:", this.user);
   },
 };
 </script>
@@ -936,6 +970,37 @@ model-viewer {
   color: #888;
   padding: 30px;
   font-style: italic;
+}
+
+.boton-flotante {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 15px 20px;
+  font-size: 18px;
+  border-radius: 50px;
+  cursor: pointer;
+  z-index: 999;
+}
+
+.btn-eliminar-obra {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: white;
+  color: red;
+  font-weight: bold;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 18px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+  z-index: 10;
 }
 
 /* Responsividad para móviles */
